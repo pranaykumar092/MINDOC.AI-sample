@@ -1,0 +1,1 @@
+# MINDOC.AI-sample
