@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Summarizer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Document Summarizer</h1>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="fileInput">Upload Document or Image</label>
+                <input type="file" class="form-control" id="fileInput" name="file" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Summarize</button>
+        </form>
+        <h2 class="mt-5">Summary</h2>
+        <div id="summary" class="border p-3"></div>
+    </div>
+    <script>
+        document.getElementById('uploadForm').onsubmit = async function(event) {
+    event.preventDefault();
+    const summaryDiv = document.getElementById('summary');
+    summaryDiv.innerText = "Processing...";
+    
+    try {
+        const formData = new FormData(this);
+        const response = await fetch('http://localhost:5000/summarize', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);  
+        }
+        
+        const result = await response.json();
+        summaryDiv.innerText = result.summary || result.error;
+    } catch (error) {
+        summaryDiv.innerText = `Error: ${error.message}`;
+        console.error('Error:', error);
+    }
+};
+    </script>
+</body>
+</html>
